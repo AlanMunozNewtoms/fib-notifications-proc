@@ -1,0 +1,44 @@
+#%RAML 1.0
+title: Process API
+version: v1.0
+baseUri: http://localhost:8081/api     
+types:
+  notification: !include dataTypes/notification.raml 
+/ticket:
+  description: General Ticket
+  post:
+    description: General ticket details on input which will be used to raise a new ticket and assign it to the user specified in the input 
+    body:
+      application/json: 
+        example: !include examples/jira-request.json
+    responses:
+      200:
+        body: 
+          application/json:
+            example: !include examples/generic-response.json
+  /{id}:
+    get:
+      description:
+      responses:
+        200:
+          body: 
+            application/json:
+              example: !include examples/generic-response.json
+/notification:
+  description: Email or SMS notification
+  post:
+    description: Sends a notification either to Email, or SMS, or both
+    queryParameters:
+      notificateBy:
+       type: string
+       enum: ["Email","Sms","Both"]
+       required: true
+    body:  
+      application/json:
+        type: notification
+        example: !include examples/notification-request.json
+    responses:
+     200:
+      body:
+         application/json:
+          example: !include examples/generic-response.json

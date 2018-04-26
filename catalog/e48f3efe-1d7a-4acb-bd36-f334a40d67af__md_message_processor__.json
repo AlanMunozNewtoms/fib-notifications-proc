@@ -1,0 +1,16 @@
+{
+    "inputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "poll-response"
+        }
+    },
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "CheckForUpdatedIssues-response"
+        }
+    },
+    "id": "e48f3efe-1d7a-4acb-bd36-f334a40d67af",
+    "version": "5.2.0.0"
+}

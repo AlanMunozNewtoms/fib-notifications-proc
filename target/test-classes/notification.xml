@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+    <sub-flow name="send-email">
+        <dw:transform-message doc:name="Object To Json">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+  subject: payload.subject,
+  message: payload.message,
+  priority: payload.priority,
+  recipient: payload.emailRecipient
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="fib-notifications-sys Email API request: #[message.payloadAs(java.lang.String)]" level="INFO" doc:name="Logger: Email API request"/>
+        <http:request config-ref="HTTP_Request_Configuration" path="/email" method="POST" doc:name="HTTP: /email request"/>
+        <logger message="fib-notifications-sys Email API response: #[message.payloadAs(java.lang.String)]" level="INFO" doc:name="Logger: Email API Response"/>
+    </sub-flow>
+    <sub-flow name="send-sms">
+        <dw:transform-message doc:name="Map Request">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+	message: payload.message,
+	recipient: payload.smsRecipient
+}]]></dw:set-payload>
+        </dw:transform-message>
+        <logger message="fib-notifications-sys SMS API request: #[message.payloadAs(java.lang.String)]" level="INFO" doc:name="Logger: SMS API request"/>
+        <http:request config-ref="HTTP_Request_Configuration" path="/sms" method="POST" doc:name="HTTP: /sms request"/>
+        <logger message="fib-notifications-sys Sms API response: #[message.payloadAs(java.lang.String)]" level="INFO" doc:name="Logger: SMS API response"/>
+    </sub-flow>
+    <sub-flow name="send-both">
+        <logger message="fib-notifications-sys SMS and Email API request: #[message.payloadAs(java.lang.String)]" level="INFO" doc:name="Logger: SMS and Email API request"/>
+        <scatter-gather doc:name="Scatter-Gather">
+            <flow-ref name="send-email" doc:name="send-email"/>
+            <flow-ref name="send-sms" doc:name="send-sms"/>
+        </scatter-gather>
+    </sub-flow>
+</mule>

@@ -1,0 +1,11 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "jira-search-jql-response"
+        }
+    },
+    "id": "aa60df41-730f-4906-a230-3e47a083f89a",
+    "version": "5.2.0.0"
+}

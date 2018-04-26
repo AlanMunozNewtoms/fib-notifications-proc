@@ -1,0 +1,32 @@
+[{
+"expand": "operations,versionedRepresentations,editmeta,changelog,renderedFields",
+  "id": "33159",
+  "self": "https://newtoms.atlassian.net/rest/api/2/issue/33159",
+  "key": "CROWD-39",
+  "fields": {
+    "issuetype": {
+      "self": "https://newtoms.atlassian.net/rest/api/2/issuetype/1",
+      "id": "1",
+      "description": "A problem which impairs or prevents the functions of the product.",
+      "iconUrl": "https://newtoms.atlassian.net/secure/viewavatar?size=xsmall&avatarId=11203&avatarType=issuetype",
+      "name": "Bug",
+      "subtask": false,
+      "avatarId": 11203
+    },
+    "updated": "2018-04-26T14:26:25.683-0400",
+    "status": {
+      "self": "https://newtoms.atlassian.net/rest/api/2/status/3",
+      "description": "This issue is being actively worked on at the moment by the assignee.",
+      "iconUrl": "https://newtoms.atlassian.net/images/icons/statuses/inprogress.png",
+      "name": "In Progress",
+      "id": "3",
+      "statusCategory": {
+        "self": "https://newtoms.atlassian.net/rest/api/2/statuscategory/4",
+        "id": 4,
+        "key": "indeterminate",
+        "colorName": "yellow",
+        "name": "In Progress"
+      }
+    }
+  }
+}]

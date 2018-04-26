@@ -1,0 +1,8 @@
+{
+  "issueType": "Bug", 
+  "summary": "This is a bug",
+  "projectKey": "CROWD",
+  "issuePriority": "5",
+  "description": "Just a test bug, dont worry!",
+  "assignee":"alan.munoz"
+}

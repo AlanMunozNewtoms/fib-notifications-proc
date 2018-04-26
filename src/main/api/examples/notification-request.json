@@ -1,0 +1,7 @@
+{
+  "subject": "Testing email",
+  "message": "Hello from testing app",
+  "priority": "Minor",
+  "emailRecipient": "fib.test.mb@gmail.com",
+  "smsRecipient":"+5561249571"
+}

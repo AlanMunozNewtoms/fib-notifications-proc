@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+    <sub-flow name="post-ticket">
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+  issueType: payload.issueType, 
+  summary: payload.summary,
+  projectKey: payload.projectKey,
+  issuePriority: payload.issuePriority,
+  description: payload.description
+  
+}]]></dw:set-payload>
+            <dw:set-variable variableName="assignee"><![CDATA[%dw 1.0
+%output application/java
+---
+payload.assignee]]></dw:set-variable>
+        </dw:transform-message>
+        <logger message="Post Issue Request: #[message.payloadAs(java.lang.String)]" level="INFO" doc:name="Logger: Post Issue Request"/>
+        <http:request config-ref="HTTP_Request_Configuration" path="/jira" method="POST" doc:name="HTTP: Post /jira"/>
+        <logger message="Post issue Jira response: #[message.payloadAs(java.lang.String)]" level="INFO" doc:name="Logger"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+	assignee: flowVars.assignee
+}]]></dw:set-payload>
+            <dw:set-variable variableName="issuePayload"><![CDATA[%dw 1.0
+%output application/java
+---
+payload]]></dw:set-variable>
+        </dw:transform-message>
+        <http:request config-ref="HTTP_Request_Configuration" path="/jira/{id}" method="PATCH" doc:name="HTTP: Patch /jira/{id}">
+            <http:request-builder>
+                <http:uri-param paramName="id" value="#[flowVars.issuePayload.data.issueKey]"/>
+            </http:request-builder>
+        </http:request>
+        <logger message="Post Issue Response: #[message.payloadAs(java.lang.String)]" level="INFO" doc:name="Logger: Post Issue Response"/>
+        <dw:transform-message doc:name="Transform Message">
+            <dw:set-payload><![CDATA[%dw 1.0
+%output application/json
+---
+{
+  Success: true,
+  assignee: flowVars.assignee,
+  issueKey: flowVars.issuePayload.data.issueKey
+  
+}]]></dw:set-payload>
+        </dw:transform-message>
+    </sub-flow>
+    <sub-flow name="get-ticket">
+        <logger message="Get Issue Request: #[message.payloadAs(java.lang.String)]" level="INFO" doc:name="Logger: Get Issue Request"/>
+        <http:request config-ref="HTTP_Request_Configuration" path="/jira/{id}" method="GET" doc:name="HTTP: Get /jira/{id}">
+            <http:request-builder>
+                <http:uri-param paramName="id" value="#[flowVars.id]"/>
+            </http:request-builder>
+        </http:request>
+        <logger message="Get Issue Response: #[message.payloadAs(java.lang.String)]" level="INFO" doc:name="Logger: Get Issue Response"/>
+    </sub-flow>
+</mule>

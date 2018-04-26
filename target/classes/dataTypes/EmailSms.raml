@@ -1,0 +1,14 @@
+#%RAML 1.0 DataType
+
+#This file is located at dataTypes/Employees.raml
+
+type: object
+properties:
+  id?: string | integer
+  message: string | integer
+  subject?: string | integer
+  priority?:
+    type: string
+    enum: [ Urgent, Critical, Major, Minor, Trivial]
+    required: false
+  recipient: string | integer
